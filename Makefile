@@ -2,6 +2,9 @@
 # e.g. make PLATFORM=cortex-m3
 CFLAGS += -g -Wall -Werror -I include
 
+# Default PREFIX
+PREFIX ?= /usr/local/$(PLATFORM)
+
 ifeq ($(PLATFORM),cortex-m3)
   CC      = arm-none-eabi-gcc
   AR      = arm-none-eabi-ar
@@ -58,3 +61,9 @@ tests/%: tests/%.c tests/tests_glue.c libc.a
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
+
+install:
+	install -d $(DESTDIR)$(PREFIX)/include/klibc/
+	install include/*.h $(DESTDIR)$(PREFIX)/include/
+	install include/klibc/*.h $(DESTDIR)$(PREFIX)/include/klibc/
+	install -D libc.a $(DESTDIR)$(PREFIX)/lib/libc.a
